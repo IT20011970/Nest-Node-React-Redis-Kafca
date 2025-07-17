@@ -174,4 +174,17 @@ export class StudentsService {
   async getAll() {
     return await this.studentRepository.find();
   }
+
+
+  async forCourse(code: string) {
+    // const key = `Studentservice:student:${code}`;
+    var studentReturn;
+    const students = await this.studentRepository.find({
+      where: { courseID: code },
+    });
+
+    studentReturn = students;
+
+    return await studentReturn;
+  }
 }

@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { StudentsService } from './students.service';
 import { Student } from './entities/student.entity';
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { CreateStudentInputDto } from './dto/CreateStudentInputDto';
 import { StudentResponse } from './dto/studentResponse';
 import { UpdateStudentInput } from './dto/updateStudentInput';
+import { Course } from './dto/courseDto';
 
 @Resolver(() => Student)
 export class StudentsResolver {
@@ -84,5 +85,12 @@ export class StudentsResolver {
   @Query(() => [Student], { name: 'getAllStudent' })
   findAll() {
     return this.studentsService.getAll();
+  }
+  @ResolveField(() => Course, { nullable: true })
+  async course(@Parent() student: Student) {
+    if (!student.courseID) {
+      return null;
+    }
+    return { __typename: 'Course', code: student.courseID }; // Return a reference
   }
 }

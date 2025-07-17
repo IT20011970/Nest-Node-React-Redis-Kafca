@@ -6,6 +6,7 @@ import { Student } from './entities/student.entity';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Course } from './dto/courseDto';
+import { CourseResolver } from 'src/course/course.resolver';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
@@ -21,6 +22,6 @@ import { Course } from './dto/courseDto';
       },
     }),
   ],
-  providers: [StudentsResolver, StudentsService],
+  providers: [StudentsResolver, StudentsService,CourseResolver],
 })
 export class StudentsModule { }

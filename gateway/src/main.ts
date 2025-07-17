@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(json({ limit: '50mb' }));
   app.use(cors());
   app.use(urlencoded({ limit: '50mb', extended: true }));
-  const port = 3002;
+  const port = 3000;
   await app.listen(port);
 }
 bootstrap();

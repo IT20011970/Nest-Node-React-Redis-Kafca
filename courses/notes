@@ -1,0 +1,37 @@
+http://localhost:3000/graphql
+npm i --save @nestjs/typeorm pg  
+
+
+mutation{
+  createCourse(input:{
+    name:"Test"
+    code:"1"
+  }){
+    id
+  }
+}
+
+query{
+  getAllCourses{id,name}
+  
+}
+
+mutation{
+  updateCourse(UpdateCourseInput:{
+    name:"Test2"
+    code:"1",
+    id:"--id---"
+  }){
+    id,
+    name,
+    code
+  }
+}
+
+
+ docker build -t test-1 -f Dockerfile ./ 
+ docker build -t test-2 -f Dockerfile ./
+ docker build -t employee -f Dockerfile-final ./
+ docker run -p 3000:3000 --name test-2 test-2
+ docker run -p 3000:3000 --name test-1 test-1
+

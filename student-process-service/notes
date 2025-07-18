@@ -1,0 +1,12 @@
+nest g module x
+nest g controller x --no-spec
+nest g service x --no-spec
+nest g resource x --no-spec
+nest new student-process-service
+
+ docker build -t test-1 -f Dockerfile ./ 
+ docker build -t test-2 -f Dockerfile ./
+ docker build -t employee -f Dockerfile-final ./
+ docker run -p 3000:3000 --name test-2 test-2
+ docker run -p 3000:3000 --name test-1 test-1
+

@@ -20,7 +20,7 @@ export class PublisherService {
     };
 
     const job = await this._studentQueue.add(event, dataObj, jobOptions);
-    const result = await job.finished(); // ✅ Wait for completion
+    const result = await job.finished(); //  Wait for completion
 
     console.log('Job completed with result:', result);
     return result;

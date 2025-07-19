@@ -86,6 +86,19 @@ export class StudentsResolver {
   findAll() {
     return this.studentsService.getAll();
   }
+
+   @Query(() => String, {
+    name: 'addstudentsToJob',
+  })
+  async addStudentsToJob() {
+    try {
+      await this.studentsService.addStudentsToJob();
+      return 'Students added to job successfully';
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to add students to job');
+    }
+  }
+  
   @ResolveField(() => Course, { nullable: true })
   async course(@Parent() student: Student) {
     if (!student.courseID) {

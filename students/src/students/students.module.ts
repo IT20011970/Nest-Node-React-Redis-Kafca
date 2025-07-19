@@ -7,6 +7,8 @@ import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/ap
 import { GraphQLModule } from '@nestjs/graphql';
 import { Course } from './dto/courseDto';
 import { CourseResolver } from 'src/course/course.resolver';
+import { BullModule } from '@nestjs/bull';
+import { PublisherService } from './utils/publisher.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
@@ -21,7 +23,11 @@ import { CourseResolver } from 'src/course/course.resolver';
         orphanedTypes: [Course],
       },
     }),
+    BullModule.registerQueue({
+      name: 'student-queue',
+    }),
   ],
-  providers: [StudentsResolver, StudentsService,CourseResolver],
+  providers: [StudentsResolver, StudentsService, CourseResolver,PublisherService],
+  exports: [StudentsService, PublisherService],
 })
 export class StudentsModule { }

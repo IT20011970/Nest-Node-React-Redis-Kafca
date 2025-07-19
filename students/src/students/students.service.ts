@@ -6,6 +6,7 @@ import { Student } from './entities/student.entity';
 import { CreateStudentInputDto } from './dto/CreateStudentInputDto';
 import { Repository } from 'typeorm';
 import { UpdateStudentInput } from './dto/updateStudentInput';
+import { PublisherService } from './utils/publisher.service';
 
 @Injectable()
 export class StudentsService {
@@ -13,6 +14,7 @@ export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    private _job: PublisherService,
     // private readonly _kafka: ProducerService,
     // private cache: CacheService,
   ) { }
@@ -174,6 +176,23 @@ export class StudentsService {
   async getAll() {
     return await this.studentRepository.find();
   }
+
+async addStudentsToJob() {
+  await this._job.publishEvent(
+    'user.created',
+    {
+      id: 'u123',
+      name: 'Gayan',
+    },
+    {
+      attempts: 3,          
+      delay: 1000,         
+      removeOnComplete: true,
+      removeOnFail: false,
+    }
+  );
+}
+
 
 
   async forCourse(code: string) {

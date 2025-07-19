@@ -1,4 +1,89 @@
-<form id="uploadForm" enctype="multipart/form-data" method="POST" action="http://localhost:3001/upload">
-  <input type="file" name="file" accept=".xlsx, .xls" />
+<form id="uploadForm">
+  <input type="file" id="excelFile" accept=".xlsx, .xls" required />
   <button type="submit">Upload Excel</button>
 </form>
+
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fileInput = document.getElementById('excelFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Please select a file before uploading.');
+      return;
+    }
+    const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Invalid file type. Please upload an Excel file (.xls or .xlsx).');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('File too large. Please upload a file smaller than 5MB.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+
+      const uploadRes = await fetch('http://localhost:3001/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error('File upload failed');
+      }
+
+      const uploadData = await uploadRes.json();
+      const accessKey = uploadData.accessKey;
+
+      if (!accessKey) {
+        alert('Access key missing in response.');
+        return;
+      }
+
+      console.log('Access Key:', accessKey);
+
+      const gqlRes = await fetch('http://localhost:3001/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            mutation {
+              addstudentsToJob(accessKey: "${accessKey}") 
+            }
+          `,
+        }),
+      });
+
+      const gqlData = await gqlRes.json();
+
+      if (gqlData.errors) {
+        console.error(gqlData.errors);
+        alert('Error: ' + gqlData.errors[0]?.message || 'GraphQL mutation failed.');
+        return;
+      }
+      const resultMessage = gqlData.data?.addstudentsToJob;
+
+      if (!resultMessage) {
+        alert('Something went wrong while processing the file. Try again.');
+        return;
+      }
+
+      console.log('GraphQL Response:', resultMessage);
+      alert(resultMessage || 'Students added successfully.');
+
+    } catch (error) {
+      console.error('Upload/GraphQL Error:', error);
+      alert('Something went wrong while processing the file. Try again.');
+    }
+  });
+</script>

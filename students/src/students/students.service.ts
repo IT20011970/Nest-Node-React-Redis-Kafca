@@ -177,12 +177,12 @@ export class StudentsService {
     return await this.studentRepository.find();
   }
 
-async addStudentsToJob() {
+async addStudentsToJob(accessKey: string) {
   await this._job.publishEvent(
     'user.created',
     {
       id: 'u123',
-      name: 'Gayan',
+      filename: accessKey,
     },
     {
       attempts: 3,          

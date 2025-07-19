@@ -9,6 +9,7 @@ import { Course } from './dto/courseDto';
 import { CourseResolver } from 'src/course/course.resolver';
 import { BullModule } from '@nestjs/bull';
 import { PublisherService } from './utils/publisher.service';
+import { FileUploadController } from './file-upload-controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
@@ -27,6 +28,7 @@ import { PublisherService } from './utils/publisher.service';
       name: 'student-queue',
     }),
   ],
+  controllers: [FileUploadController],
   providers: [StudentsResolver, StudentsService, CourseResolver,PublisherService],
   exports: [StudentsService, PublisherService],
 })
